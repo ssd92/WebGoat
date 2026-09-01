@@ -22,9 +22,10 @@ jobs:
 
       - name: "Set labels for ${{ github.ref }}"
         run: |
-          echo "WEBGOAT_TAG_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
-          WEBGOAT_MAVEN_VERSION=${{ github.ref_name }}
-          echo "WEBGOAT_MAVEN_VERSION=${WEBGOAT_MAVEN_VERSION:1}" >> $GITHUB_ENV
+          echo "WEBGOAT_TAG_VERSION=${REF_NAME}" >> $GITHUB_ENV
+          echo "WEBGOAT_MAVEN_VERSION=${REF_NAME:1}" >> $GITHUB_ENV
+        env:
+          REF_NAME: ${{ github.ref_name }}
       - name: Build with Maven
         run: |
           mvn --no-transfer-progress versions:set -DnewVersion=${{ env.WEBGOAT_MAVEN_VERSION }}
@@ -37,7 +38,7 @@ jobs:
           files: |
             target/webgoat-${{ env.WEBGOAT_MAVEN_VERSION }}.jar
           body: |
-           ## Version ${{ github.ref_name }}
+           ## Version ${{ env.WEBGOAT_TAG_VERSION }}
 
             ### New functionality
 
@@ -47,7 +48,7 @@ jobs:
 
             - [#743 - Character encoding errors](https://github.com/WebGoat/WebGoat/issues/743)
 
-            Full change log: https://github.com/WebGoat/WebGoat/compare/${{ github.ref_name }}...${{ github.ref_name }}
+            Full change log: https://github.com/WebGoat/WebGoat/compare/${{ env.WEBGOAT_TAG_VERSION }}...${{ env.WEBGOAT_TAG_VERSION }}
 
 
             ## Contributors
